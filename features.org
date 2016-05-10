@@ -1,0 +1,21 @@
+#+Title: Desired Features of my-course Tool
+
+* Create New Courses
+
+1) prompt user for information about new courses
+   + term name
+   + courses to teach
+     - sections of each course
+   + location of csv roster for each course
+2) create directories and files for each course
+3) save defaults to config file
+
+#+BEGIN_SRC sh
+/home/brian/ownCloud/teaching/16-fall
+|- info
+|  |- first-day.org
+|  |- homework-labels.pdf
+|  |- roster.csv
+|  |- email.csv
+|  |- waitlist.csv
+#+END_SRC
