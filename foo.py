@@ -68,7 +68,7 @@ def make_dirs(l):
 #     target.write("\\begin{document}\n")
 #     target.write("\\startlabels\n")
 
-#     target.write("\\mlabel{}{\\texttt{Ryan Alexander Bloom\\\\Section 4}}\n")
+#     target.write("\\mlabel{}{\\texttt{NAME\\\\Section}}\n")
 #     target.write("\\end{document}\n")
 
 #     target.close()
