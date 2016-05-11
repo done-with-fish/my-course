@@ -1,5 +1,6 @@
 from pick import pick
 from datetime import date
+from student import Students
 import ConfigParser, os, subprocess, sys
 
 def choose_year():
@@ -61,14 +62,14 @@ def make_dirs(l):
 # def make_labels():
 #     csv.DictReader(open())
 #     target = open(file_path, 'w')
-#     target.write("\documentclass[]{letter}\n")
-#     target.write("\usepackage[avery5160label,noprintbarcodes,nocapaddress]{envlab}\n")
-#     target.write("\makelabels\n")
-#     target.write("\begin{document}\n")
-#     target.write("\startlabels\n")
+#     target.write("\\documentclass[]{letter}\n")
+#     target.write("\\usepackage[avery5160label,noprintbarcodes,nocapaddress]{envlab}\n")
+#     target.write("\\makelabels\n")
+#     target.write("\\begin{document}\n")
+#     target.write("\\startlabels\n")
 
-#     target.write("\mlabel{}{\texttt{Ryan Alexander Bloom\\Section 4}}\n")
-#     target.write("\end{document}\n")
+#     target.write("\\mlabel{}{\\texttt{Ryan Alexander Bloom\\\\Section 4}}\n")
+#     target.write("\\end{document}\n")
 
 #     target.close()
 
