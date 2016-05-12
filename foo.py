@@ -1,7 +1,8 @@
 from pick import pick
 from datetime import date
-from student import Students
-import ConfigParser, os, subprocess, sys
+from students import parse_name
+from natsort import natsorted, ns
+import csv, ConfigParser, os, subprocess, sys
 
 def choose_year():
     if date.today().month > 10:
@@ -42,11 +43,9 @@ def find_roster():
     else:
         default_path = '/home/brian/downloads/ps.xls'
         path = raw_input("Input path to roster [{}]: ".format(default_path)) or default_path
-
     while not os.path.isfile(path):
         default_path = '/home/brian/downloads/ps.xls'
         path = raw_input("Path invalid. Try again [{}]: ".format(default_path)) or default_path
-
     return path
 
 def make_roster_file(roster_path, new_path):
@@ -59,19 +58,44 @@ def make_dirs(l):
         if not os.path.exists(x):
             os.makedirs(x)
 
-# def make_labels():
-#     csv.DictReader(open())
-#     target = open(file_path, 'w')
-#     target.write("\\documentclass[]{letter}\n")
-#     target.write("\\usepackage[avery5160label,noprintbarcodes,nocapaddress]{envlab}\n")
-#     target.write("\\makelabels\n")
-#     target.write("\\begin{document}\n")
-#     target.write("\\startlabels\n")
+def first_last(s):
+    dic = parse_name(s)
 
-#     target.write("\\mlabel{}{\\texttt{NAME\\\\Section}}\n")
-#     target.write("\\end{document}\n")
+    last = dic['last']
 
-#     target.close()
+    if dic['nickname']:
+        first = dic['nickname']
+    else:
+        first = dic['first']
+
+    return first + ' ' + last
+
+def make_labels(path_to_roster, section_number, labels_path, info_path):
+    reader = csv.DictReader(open(path_to_roster))
+    dic_list = [row for row in reader]
+
+    names = [x['Name'] for x in dic_list]
+
+    names = natsorted(names, alg=ns.IC)
+
+    target = open(labels_path, 'w')
+
+    target.write("\\documentclass[]{letter}\n")
+    target.write("\\usepackage[avery5160label,noprintbarcodes,nocapaddress]{envlab}\n")
+    target.write("\\makelabels\n")
+    target.write("\\begin{document}\n")
+    target.write("\\startlabels\n")
+
+    for x in names:
+        target.write("\\mlabel{{}}{{\\texttt{{{0}\\\\ Section {1}}}}}\n".format(first_last(x), section_number))
+
+    target.write("\\end{document}\n")
+
+    target.close()
+
+    command = "pdflatex -output-directory={1} {0}".format(labels_path, info_path)
+    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
 
 def make_course():
     semester       = choose_semester()
@@ -103,5 +127,7 @@ def make_course():
         scratch_path
     ])
     make_roster_file(roster_path, info_path + '/sec{}-roster.csv'.format(section_number))
+
+    make_labels(info_path + '/sec{}-roster.csv'.format(section_number), section_number, info_path + '/sec{}-roster.csv'.format(section_number), info_path)
 
 make_course()

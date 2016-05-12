@@ -15,7 +15,7 @@ def legalRow(s):
         status = False
     return status
 
-def parseTableRow(s):
+def fixTableRow(s):
     s = s.replace('|', '', 1)
     s = rreplace(s, '|', '', 1)
     s = stripFringeWhitespace(s)
@@ -31,7 +31,7 @@ def orgTableToReader(file_path, table_name = False):
     else:
         myfile = data.splitlines()
 
-    myNewFile = [parseTableRow(row) for row in myfile if legalRow(row)]
+    myNewFile = [fixTableRow(row) for row in myfile if legalRow(row)]
 
     reader = csv.DictReader(myNewFile, delimiter='|')
 
@@ -40,10 +40,3 @@ def orgTableToReader(file_path, table_name = False):
 def orgTableToDict(file_path, table_name = False):
     reader = orgTableToReader(file_path, table_name)
     return [row for row in reader]
-
-L = orgTableToDict('/home/brian/teaching/16-fall/math-212/info/sec1-roster.org')
-
-for x in L:
-    print x
-
-print len(L)
