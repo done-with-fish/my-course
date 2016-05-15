@@ -1,25 +1,8 @@
-import subprocess, glob, os, sys
+import subprocess
 
-def findOrgFiles(path):
-    os.chdir(path)
-    file_paths = [path+x for x in glob.glob("*.org")]
-    return file_paths
-
-def makeCommand(l):
-    s = 'parallel org2txt ::: '
-    for x in l:
-        s += x + ' '
-    return s
-
-def runBashCommand(command):
-    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+def exportOrgFiles(path):
+    my_command = "find {} -type f -iname \"*.org\" -print0 | parallel -0 org2txt".format(path)
+    process = subprocess.Popen(my_command, stdout=subprocess.PIPE, shell=True)
     output = process.communicate()[0]
     return None
 
-def exportOrgFiles(path):
-    list_of_files = findOrgFiles(path)
-    command       = makeCommand(list_of_files)
-    runBashCommand(command)
-    return None
-
-exportOrgFiles(sys.argv[1])

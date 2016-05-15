@@ -1,4 +1,4 @@
-import csv, re
+import re, csv
 
 def stripFringeWhitespace(s):
     s = s.lstrip(' ')
@@ -22,21 +22,21 @@ def fixTableRow(s):
     s = re.sub(r'\s*\|\s*', '|', s)
     return s
 
+def readerToDict(reader):
+    return [row for row in reader]
+
 def orgTableToReader(file_path, table_name = False):
     data = open(file_path).read()
-
     if table_name:
-        mo   = re.search("TBLNAME: {0}\n.*?\n(\n|$)".format(table_name), data, re.S)
+        mo     = re.search("TBLNAME: {0}\n.*?\n(\n|$)".format(table_name), data, re.S)
         myfile = mo.group(0).splitlines()
     else:
         myfile = data.splitlines()
-
     myNewFile = [fixTableRow(row) for row in myfile if legalRow(row)]
-
-    reader = csv.DictReader(myNewFile, delimiter='|')
-
+    reader    = csv.DictReader(myNewFile, delimiter='|')
     return reader
 
 def orgTableToDict(file_path, table_name = False):
     reader = orgTableToReader(file_path, table_name)
-    return [row for row in reader]
+    dic    = readerToDict(reader)
+    return dic

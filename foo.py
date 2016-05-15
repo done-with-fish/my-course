@@ -1,33 +1,10 @@
 from pick import pick
-from datetime import date
 from students import parse_name
 from natsort import natsorted, ns
+
 import csv, ConfigParser, os, subprocess, sys
 
-def choose_year():
-    if date.today().month > 10:
-        default_year = date.today().year + 1
-        default_year = str(default_year)
-    else:
-        default_year = date.today().year
-        default_year = str(default_year)
-    chosen_year = raw_input("Input term year [{}]: ".format(default_year)) or default_year
-    return chosen_year
-
-def choose_semester():
-    semesters   = ['Fall', 'Spring',  'Summer Term 1',  'Summer Term 2']
-    semester, i = pick(semesters, 'Choose semester.', indicator = '=>', default_index = 0)
-    return semester
-
-def choose_course_number():
-    course_number = raw_input("Input course number [212]: ") or '212'
-    return course_number
-
-def choose_section_number():
-    section_number = raw_input("Input section number [1]: ") or '1'
-    return section_number
-
-def abbreviate_term(year, semester):
+def abbreviateTerm(year, semester):
     dic = {
         'Fall'          : 'fall',
         'Spring'        : 'spring',
@@ -37,7 +14,7 @@ def abbreviate_term(year, semester):
     term_abbrev = year.replace('20', '', 1) + '-' + dic[semester]
     return term_abbrev
 
-def find_roster():
+def findRoster():
     if len(sys.argv) > 1:
         path = str(sys.argv[1])
     else:
@@ -93,18 +70,18 @@ def make_labels(path_to_roster, section_number, labels_path, info_path):
 
     target.close()
 
-    command = "pdflatex -output-directory={1} {0}".format(labels_path, info_path)
+    command = "pdflatex -output-directory={0} {1}".format(info_path, labels_path)
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
 
 def make_course():
-    semester       = choose_semester()
-    year           = choose_year()
-    course_number  = choose_course_number()
-    section_number = choose_section_number()
-    roster_path    = find_roster()
+    semester       = chooseSemester()
+    year           = chooseYear()
+    course_number  = chooseCourseNumber()
+    section_number = chooseSectionNumber()
+    roster_path    = findRoster()
 
-    term_abbrev = abbreviate_term(year, semester)
+    term_abbrev = abbreviateTerm(year, semester)
 
     config = ConfigParser.RawConfigParser()
     config.read('.dirs.cfg')
@@ -128,6 +105,6 @@ def make_course():
     ])
     make_roster_file(roster_path, info_path + '/sec{}-roster.csv'.format(section_number))
 
-    make_labels(info_path + '/sec{}-roster.csv'.format(section_number), section_number, info_path + '/sec{}-roster.csv'.format(section_number), info_path)
+    make_labels(info_path + '/sec{}-roster.csv'.format(section_number), section_number, info_path + '/sec{}-roster.tex'.format(section_number), info_path)
 
 make_course()
