@@ -1,0 +1,10 @@
+| category   | weight |
+|------------+--------|
+| final exam |        |
+| homework   |        |
+| labs       |        |
+| midterms   |        |
+| quizzes    |        |
+|------------+--------|
+| total      |      0 |
+#+TBLFM: @>$> = vsum(@<<$>..@>>$>)

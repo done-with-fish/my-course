@@ -4,7 +4,7 @@ from natsort import natsorted, ns
 
 import csv, ConfigParser, os, subprocess, sys
 
-def abbreviateTerm(year, semester):
+def abbreviate_term(year, semester):
     dic = {
         'Fall'          : 'fall',
         'Spring'        : 'spring',
@@ -14,15 +14,14 @@ def abbreviateTerm(year, semester):
     term_abbrev = year.replace('20', '', 1) + '-' + dic[semester]
     return term_abbrev
 
-def findRoster():
-    if len(sys.argv) > 1:
-        path = str(sys.argv[1])
-    else:
-        default_path = '/home/brian/downloads/ps.xls'
-        path = raw_input("Input path to roster [{}]: ".format(default_path)) or default_path
+def find_roster():
+    default_path = '/home/brian/downloads/ps.xls'
+    prompt = "Input path to roster [{}]: ".format(default_path)
+    path = raw_input(prompt) or default_path
     while not os.path.isfile(path):
         default_path = '/home/brian/downloads/ps.xls'
-        path = raw_input("Path invalid. Try again [{}]: ".format(default_path)) or default_path
+        prompt = "Path invalid. Try again [{}]: ".format(default_path)
+        path = raw_input(prompt) or default_path
     return path
 
 def make_roster_file(roster_path, new_path):
@@ -79,9 +78,9 @@ def make_course():
     year           = chooseYear()
     course_number  = chooseCourseNumber()
     section_number = chooseSectionNumber()
-    roster_path    = findRoster()
+    roster_path    = find_roster()
 
-    term_abbrev = abbreviateTerm(year, semester)
+    term_abbrev = abbreviate_term(year, semester)
 
     config = ConfigParser.RawConfigParser()
     config.read('.dirs.cfg')
