@@ -1,9 +1,11 @@
+from datetime import date
+from pick import pick
+import ConfigParser
 import editor
 import orgtbl
 import os
 import yesno
-from pick import pick
-from datetime import date
+
 
 def year():
     if date.today().month > 10:
@@ -18,18 +20,22 @@ def year():
         input_year = raw_input(prompt) or default_year
     return str(input_year)
 
+
 def semester():
-    semesters   = ['Fall', 'Spring',  'Summer Term 1',  'Summer Term 2']
-    semester, i = pick(semesters, 'Choose semester.', indicator = '=>')
+    semesters = ['Fall', 'Spring',  'Summer Term 1',  'Summer Term 2']
+    semester, i = pick(semesters, 'Choose semester.', indicator='=>')
     return semester
+
 
 def course_nbr():
     os.system('clear')
     return raw_input('Input course number [212]: ') or '212'
 
+
 def section_nbr():
     os.system('clear')
     return raw_input('Input section number [1]: ') or '1'
+
 
 def grade_weights():
     root = os.path.dirname(os.path.realpath(__file__))
@@ -46,6 +52,7 @@ def grade_weights():
            for d in dcts if d['category'] != 'total'}
     return dct
 
+
 def find_roster():
     default_path = '/home/brian/downloads/ps.xls'
     prompt = "Input path to roster [{}]: ".format(default_path)
@@ -56,3 +63,11 @@ def find_roster():
         prompt = 'Path invalid. Try again [{}]: '.format(default_path)
         path = raw_input(prompt) or default_path
     return path
+
+
+def make_default(dct):
+    config = ConfigParser.RawConfigParser()
+    config.add_section('section1')
+    config.set('section1', 'key', 'value')
+    with open('.config.cfg') as configfile:
+        config.write(configfile)

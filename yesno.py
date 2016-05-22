@@ -1,5 +1,6 @@
 import sys
 
+
 def query(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.
 
