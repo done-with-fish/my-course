@@ -7,7 +7,9 @@ class Student:
         self.dean = dct['Dean']
         self.grade_basis = dct['Grade Basis']
 
-    def parse_name(self):
+
+    @property
+    def preferred_name(self):
         last, rest = self.name.split(',')
         last = last.strip()
         rest = rest.strip()
@@ -34,6 +36,11 @@ class Student:
         self.middle_name = dct['middle']
         self.nickname = dct['nickname']
         if self.nickname:
-            self.preferred_name = self.nickname + ' ' + self.last_name
+            return self.nickname + ' ' + self.last_name
         else:
-            self.preferred_name = self.first_name + ' ' + self.last_name
+            return self.first_name + ' ' + self.last_name
+
+    @property
+    def abbrev(self):
+        last = self.name.split(',')[0].split()[0]
+        return last.lower()

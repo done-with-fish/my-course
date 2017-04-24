@@ -45,25 +45,31 @@ def string_to_dcts(s):
 
 def file_to_reader(file_path, table_name=''):
     try:
-        string = open(file_path).read()
+        f = open(file_path).read()
     except IOError:
-        print 'Not a valid filepath.'
+        print('Not a valid filepath.')
         return None
     if table_name:
         header = "TBLNAME: {0}\n.*?\n(\n|$)".format(table_name)
-        mo = re.search(header, string, re.S)
+        mo = re.search(header, f, re.S)
         table_lines = mo.group(0).splitlines()
     else:
-        table_lines = string.splitlines()
+        table_lines = f.splitlines()
     return list_to_reader(table_lines)
 
 
 def file_to_dcts(file_path, table_name=''):
-    def is_number(s):
+    def num(s):
         try:
-            float(s)
-            return True
+            return int(s)
         except ValueError:
-            return False
+            try:
+                return float(s)
+            except ValueError:
+                return s
     reader = file_to_reader(file_path, table_name)
-    return reader_to_dcts(reader)
+    dcts = reader_to_dcts(reader)
+    for dct in dcts:
+        for key in dct:
+            dct[key] = num(dct[key])
+    return dcts

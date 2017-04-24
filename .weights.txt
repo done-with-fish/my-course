@@ -1,0 +1,18 @@
+brian
+
+
+Table of Contents
+_________________
+
+
+
+
+ category    weight 
+--------------------
+ final exam         
+ homework           
+ labs               
+ midterms           
+ quizzes            
+--------------------
+ total       0      

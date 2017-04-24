@@ -1,4 +1,3 @@
-from natsort import natsorted, ns
 from student import Student
 import choices
 import csv
@@ -10,8 +9,8 @@ import sys
 
 class Course:
 
-    teaching_dir = '/home/brian/TEST-COURSE/teaching'
-    webpage_dir = '/home/brian/TEST-COURSE/webpage/public_html/teaching'
+    teaching_dir = '/home/brian/'
+    webpage_dir = '/home/brian/'
 
     def __init__(self, dct):
         self.year = dct['year']
@@ -32,30 +31,24 @@ class Course:
         dct['roster source'] = choices.find_roster()
         return cls(dct)
 
-    def make_term(self):
+    @property
+    def term(self):
         dct = {
             'Fall': 'fall',
             'Spring': 'spring',
             'Summer Term 1': 'summer-t1',
             'Summer Term 2': 'summer-t2'
         }
-        self.term = self.year.replace('20', '', 1) + '-' + dct[self.semester]
-        return None
+        return self.year.replace('20', '', 1) + '-' + dct[self.semester]
 
-    def make_name(self):
-        self.name = 'math' + self.course_nbr
-        return None
+    @property
+    def name(self):
+        return 'math' + self.course_nbr
 
     def make_dirs(self):
-        self.make_term()
-        self.make_name()
         under_teaching = ['docs', 'exams', 'gradebook', 'scratch', 'info']
-        under_webpage = [self.term + '/' + self.name]
-        for path in [Course.teaching_dir, Course.webpage_dir]:
-            if not os.path.exists(path):
-                os.makedirs(path)
         for d in under_teaching:
-            path = os.path.join(Course.teaching_dir, d)
+            path = os.path.join(Course.teaching_dir, self.term, self.name, d)
             setattr(self, d + '_path', path)
             if not os.path.exists(path):
                 os.makedirs(path)
@@ -93,7 +86,11 @@ class Course:
         target.write('\\begin{document}\n')
         target.write('\\startlabels\n')
         for x in self.students:
-            target.write('\\mlabel{{}}{{\\texttt{{{0}\\\\ Section {1}}}}}\n'.format(x.preferred_name, self.section_nbr))
+            target.write(
+                (
+                    '\\mlabel{{}}{{\\texttt{{{0}\\\\ Section {1}}}}}\n'
+                ).format(x.preferred_name, self.section_nbr)
+            )
         target.write('\\end{document}\n')
         target.close()
         labels_pdf = os.path.join(
@@ -104,9 +101,26 @@ class Course:
         process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
         output = process.communicate()[0]
 
-x = Course({'year': '2016', 'semester': 'Fall', 'course number': '212', 'section number': '1', 'grade weights': {}, 'roster source': '/home/brian/downloads/ps.xls'})
+    def make_emails(self):
+        self.email_path = os.path.join(
+            self.info_path, 'sec{}-emails.csv'.format(self.section_nbr)
+        )
+        with open(self.email_path, 'w') as csvfile:
+            emailwriter = csv.writer(csvfile, delimiter=',')
+            emailwriter.writerow(['email', 'name'])
+            for x in self.students:
+                emailwriter.writerow([x.email, '\'' + x.preferred_name + '\''])
+
+x = Course({
+    'year': '2016',
+    'semester': 'Fall',
+    'course number': '212',
+    'section number': '1',
+    'grade weights': {},
+    'roster source': '/home/brian/downloads/ps.xls'
+})
 x.make_dirs()
 x.make_roster()
 x.get_students()
 x.make_labels()
-
+x.make_emails()

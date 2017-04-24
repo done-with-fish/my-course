@@ -1,6 +1,6 @@
 from datetime import date
 from pick import pick
-import ConfigParser
+# import ConfigParser
 import editor
 import orgtbl
 import os
@@ -44,7 +44,7 @@ def grade_weights():
     while True:
         table_string = editor.edit_string(table_string)
         os.system('clear')
-        print table_string.split('#')[0]
+        print(table_string.split('#')[0])
         if yesno.query('Are these weights ok?'):
             break
     dcts = orgtbl.string_to_dcts(table_string)
@@ -65,9 +65,9 @@ def find_roster():
     return path
 
 
-def make_default(dct):
-    config = ConfigParser.RawConfigParser()
-    config.add_section('section1')
-    config.set('section1', 'key', 'value')
-    with open('.config.cfg') as configfile:
-        config.write(configfile)
+# def make_default(dct):
+#     config = ConfigParser.RawConfigParser()
+#     config.add_section('section1')
+#     config.set('section1', 'key', 'value')
+#     with open('.config.cfg') as configfile:
+#         config.write(configfile)
